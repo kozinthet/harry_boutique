@@ -1,0 +1,4 @@
+name = GSI forms fix
+description = Prepend all form actions with base_url
+core = 7.x
+version = 7.x-1

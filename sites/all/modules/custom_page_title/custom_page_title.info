@@ -1,0 +1,6 @@
+name = Custom Page Title
+description = Provides Custom Page Title
+package = Custom Page Title
+version = "7.x-1.1"
+core = "7.x"
+project = "custom_page_title"

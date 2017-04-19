@@ -1,0 +1,72 @@
+<?php
+
+/**
+ * Implements hook_form_alter
+ */
+
+function gsi_forms_fix_form_alter(&$form, &$form_state, $form_id) {
+  global $base_url;
+  
+  $action = $form['#action'];
+
+  $replacements = array();
+
+  $replacements = explode("\r\n", variable_get('gsi_form_action_replace', ''));
+
+  if (!empty($replacements)) {
+  	foreach ($replacements as $replacement) {
+	  	$replace = explode('|', $replacement);
+
+	  	$action = str_replace($replace[0], $replace[1], $action);
+	  }
+  }
+
+  $form['#action'] = $base_url . $action;
+}
+
+
+/**
+ * Implements hook_perm().
+ */
+function gsi_forms_fix_permission() {
+  return array(
+    'administer gsi_forms_fix' => array(
+      'title' => t('Administer gsi_forms_fix module'),
+      'description' => t('Perform administration tasks for gsi_forms_fix module.'),
+    ),
+  );
+}
+
+
+/**
+ * Implements hook_menu
+ */
+function gsi_forms_fix_menu() {
+	$items = array();
+
+	$items['admin/gsi/form-fix'] = array(
+    'title' => 'GSI Form Fix',
+    'description' => 'Manage the settings of GSI Form Fix.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('gsi_form_fix_admin_settings'),
+    'weight' => 10,
+    'access arguments' => array('administer gsi_forms_fix'),
+	);
+
+	return $items;
+}
+
+/**
+ * Generates and admin settings form.
+ */
+function gsi_form_fix_admin_settings($form, &$form_state) {
+
+	$form['gsi_form_action_replace'] = array(
+    '#type' => 'textarea',
+    '#title' => t('GSI From Action Replacement'),
+    '#description' => t('Enter one line per Replacement in search|replace format. Refer <a href="http://php.net/manual/en/function.str-replace.php">str_replace</a> in php for more info.'),
+    '#default_value' => variable_get('gsi_form_action_replace', '')
+	);
+
+	return system_settings_form($form);
+}

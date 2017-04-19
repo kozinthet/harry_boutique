@@ -1,0 +1,23 @@
+<?php
+function custom_page_title_preprocess_html(&$variables) {
+  // Make sure current page is taxonomy/term/tid
+  // In case if you use alias then you can use these way
+  // Let’s say your term page is vegetables/tomato then use like
+  // if( arg(1) = 'blog' && count(arg()) == 2 ){
+  // and alternatively change loading term from name to tid
+  if (arg(1) == 'blog' && arg(2) == 'daniel-tjan') {
+    //loading term by tid
+    $term = user_load(arg(2));
+
+    //get node count by replacing token value
+    $term_node_count = token_replace('[node:author]', array('term' => $term));
+
+    //get site name
+    $site_name = token_replace('[site:name]');
+    $head_title = "Posts By " . $term_node_count . " - Judgify Blog";
+
+    //add title
+    $variables['head_title'] = $head_title;
+  }
+}
+?>
